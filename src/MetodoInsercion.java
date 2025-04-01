@@ -1,44 +1,54 @@
+import java.util.Arrays;
+
 public class MetodoInsercion {
-
-    public void ordenar(int[] array, boolean conditional) {
-        if (conditional) {
-            for (int i = 1; i < array.length; i++) {
-                int aux = array[i];
-                int j = i - 1;
-    
-                while (j >= 0 && aux < array[j]) {
-                    array[j + 1] = array[j];
-                    j = j - 1;
+    public static int[] ordenar(int[] arr, boolean ascendente, boolean mostrarPasos) {
+        int comparaciones = 0;
+        int cambios = 0;
+        int n = arr.length;
+        
+        for (int i = 1; i < n; i++) {
+            int valorActual = arr[i];
+            int j = i - 1;
+            
+            while (j >= 0) {
+                comparaciones++;
+                boolean condicion = ascendente ? arr[j] > valorActual : arr[j] < valorActual;
+                
+                if (mostrarPasos) {
+                    System.out.printf("Comparación %d: %d %s %d%n", 
+                            comparaciones, arr[j], ascendente ? ">" : "<", valorActual);
                 }
-                array[j + 1] = aux; 
-            }
-        }
-
-        else {
-            int n = array.length;
-            for (int i = 1; i < n; i++) {
-                int aux = array[i];
-                int j = i - 1;
-
-                System.out.println("i: " + i + ", j: " + j + ", aux: " + aux);
-                while (j >= 0 && array[j] > aux) {
-                    System.out.println("Compara aux: " + aux + " con array[" + j + "]: " + array[j]);
-                    array[j + 1] = array[j];
-                    System.out.println("Mueve array[" + j + "] a array[" + (j + 1) + "]");
+                
+                if (condicion) {
+                    cambios++;
+                    arr[j + 1] = arr[j];
+                    
+                    if (mostrarPasos) {
+                        System.out.printf("Desplazamiento: %d -> posición %d%n", 
+                                arr[j], j + 1);
+                        System.out.println("Estado actual: " + Arrays.toString(arr));
+                    }
+                    
                     j--;
+                } else {
+                    if (mostrarPasos) {
+                        System.out.println("(No hay desplazamiento)");
+                    }
+                    break;
                 }
-                array[j + 1] = aux;
-                System.out.println("Inserta aux: " + aux + " en la posición " + (j + 1));
-                imprimirArreglo(array);
+            }
+            
+            if (j + 1 != i) {
+                arr[j + 1] = valorActual;
+                
+                if (mostrarPasos) {
+                    System.out.printf("Insertando %d en posición %d%n", 
+                            valorActual, j + 1);
+                    System.out.println("Estado actual: " + Arrays.toString(arr));
+                }
             }
         }
-
-        }
-
-    public void imprimirArreglo(int[] array) {
-        for (int elemento : array) {
-            System.out.print(elemento + ", ");                      
-        }
-        System.out.println();
+        
+        return new int[]{comparaciones, cambios};
     }
 }

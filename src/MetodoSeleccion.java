@@ -1,44 +1,48 @@
+import java.util.Arrays;
+
 public class MetodoSeleccion {
-    
-    public void ordenar(int[] arreglo, boolean conditional) {
-        if (conditional) {
-            for (int i = 0; i < arreglo.length; i++) {
-                int iMin = i; 
-                for (int j = i + 1; j < arreglo.length; j++) {
-                    if (arreglo[j] < arreglo[iMin]) {
-                        iMin  = j;
-                    }
+    public static int[] ordenar(int[] arr, boolean ascendente, boolean mostrarPasos) {
+        int comparaciones = 0;
+        int cambios = 0;
+        int n = arr.length;
+        
+        for (int i = 0; i < n - 1; i++) {
+            int posicion = i;
+            
+            for (int j = i + 1; j < n; j++) {
+                comparaciones++;
+                boolean condicion = ascendente ? arr[j] < arr[posicion] : arr[j] > arr[posicion];
+                
+                if (mostrarPasos) {
+                    System.out.printf("Comparación %d: %d %s %d%n", 
+                            comparaciones, arr[j], ascendente ? "<" : ">", arr[posicion]);
                 }
-                if (i != iMin) {
-                    int aux = arreglo[i];
-                    arreglo[i] = arreglo[iMin];
-                    arreglo[iMin] = aux;
+                
+                if (condicion) {
+                    posicion = j;
+                    
+                    if (mostrarPasos) {
+                        System.out.printf("Nuevo mínimo/máximo encontrado en posición %d: %d%n", 
+                                posicion, arr[posicion]);
+                    }
+                } else if (mostrarPasos) {
+                    System.out.println("(No es el nuevo mínimo/máximo)");
                 }
             }
-        }
-        else {
-            for (int i = 0; i < arreglo.length; i++) {
-                int iMax = i; 
-                for (int j = i + 1; j < arreglo.length; j++) {
-                    if (arreglo[j] > arreglo[iMax]) {
-                        iMax  = j;
-                    }
-                }
-                if (i != iMax) {
-                    int aux = arreglo[i];
-                    arreglo[i] = arreglo[iMax];
-                    arreglo[iMax] = aux;
+            
+            if (posicion != i) {
+                cambios++;
+                int temp = arr[i];
+                arr[i] = arr[posicion];
+                arr[posicion] = temp;
+                
+                if (mostrarPasos) {
+                    System.out.printf("Intercambio: %d <-> %d%n", arr[i], arr[posicion]);
+                    System.out.println("Estado actual: " + Arrays.toString(arr));
                 }
             }
         }
         
-    }
-
-    // Método para imprimir el arreglo
-    public void printArray(int[] arreglo) {
-        for (int i = 0; i < arreglo.length; i++) {
-            System.out.print(arreglo[i] + " ");
-        }
-        System.out.println(); // Salto de línea para mejor formato
+        return new int[]{comparaciones, cambios};
     }
 }
